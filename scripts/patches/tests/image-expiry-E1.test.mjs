@@ -41,6 +41,9 @@ test('两种协议均将已清理图片替换为同一稳定占位，保留文�
     assert.deepEqual(actual[0].content[2], history[0].content[2])
     assert.deepEqual(actual[0].content[3], history[0].content[3])
     assert.deepEqual(project(history, versions), actual)
+    const untouched = [{ role: 'user', content: [{ type: 'text', text: '继续' }, { type: 'image', attachment: { attachmentId: 'current' } }] }]
+    assert.equal(project(untouched, versions), untouched)
+    assert.equal(project(untouched, versions)[0], untouched[0])
   }
 })
 

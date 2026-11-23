@@ -606,6 +606,24 @@
       "provenance": "2026-11-05 issue #960 中优先级：同屏三个 section[aria-label=\"模型目录\"]（高度 197/0/142），读屏与按 label 定位都无法区分",
       "marker": "dsh-mobile model catalog section labels (#960)",
       "test": "scripts/patches/tests/custom-provider-form-960.test.mjs"
+    },
+    {
+      "id": "long-session-history-cache",
+      "target": "usr/lib/node_modules/@deepseek-ai/dsh/node_modules/@deepseek-ai/dsh-llm-pi-ai/lib/index.js",
+      "additionalTargets": [
+        "usr/lib/node_modules/@deepseek-ai/dsh/node_modules/@earendil-works/pi-ai/dist/api/transform-messages.js",
+        "usr/lib/node_modules/@deepseek-ai/dsh/node_modules/@earendil-works/pi-ai/dist/api/openai-responses-shared.js"
+      ],
+      "scope": "engine",
+      "summary": "长会话冻结历史消息按 WeakMap/WeakSet 复用转换与校验结果，跳过每轮数万次 JSON.parse/stringify 与全量代理对正则扫描",
+      "provenance": "2026-11-24 Android 33K-message 长会话实机剖析：与 E1 写时复制配合，将 DSH 请求构造端 toPiContext + convertResponsesMessages 耗时降幅约 70% 且出站字节完全一致",
+      "marker": "dsh-mobile long-session history cache",
+      "requires": [
+        "image-expiry-E1",
+        "pi-upstream-streaming-020",
+        "sealed-reasoning-1304"
+      ],
+      "test": "scripts/patches/tests/long-session-history-cache.test.mjs"
     }
   ],
   "retired": [

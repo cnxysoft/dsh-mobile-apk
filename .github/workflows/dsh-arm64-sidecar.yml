@@ -3,7 +3,7 @@ name: DSH arm64 APK sidecar
 
 on:
   push:
-    branches: [codex/dsh-arm64-sidecar-20261123]
+    branches: [codex/dsh-arm64-sidecar-20261123, perf/long-session-history-cache]
 
 concurrency:
   group: dsh-arm64-sidecar-${{ github.ref }}

@@ -15,9 +15,24 @@ function once(source, before, after) {
 
 const projector = `function dshProjectMissingImages(messages, versions) {
 \t// ${EXPIRY_MARKER}
-\treturn messages.map(message => ({ ...message, content: message.content.map(block =>
-\t\tblock.type === "image" && block.offloaded !== true && !versions.has(block.attachment.attachmentId)
-\t\t\t? { type: "text", text: ${JSON.stringify(EXPIRED_IMAGE_TEXT)} } : block) }));
+\tlet nextMessages;
+\tfor (let i = 0; i < messages.length; i++) {
+\t\tconst message = messages[i];
+\t\tconst blocks = message.content;
+\t\tlet nextBlocks;
+\t\tfor (let j = 0; j < blocks.length; j++) {
+\t\t\tconst block = blocks[j];
+\t\t\tif (block.type === "image" && block.offloaded !== true && !versions.has(block.attachment.attachmentId)) {
+\t\t\t\tif (nextBlocks === void 0) nextBlocks = blocks.slice(0, j);
+\t\t\t\tnextBlocks.push({ type: "text", text: ${JSON.stringify(EXPIRED_IMAGE_TEXT)} });
+\t\t\t} else if (nextBlocks !== void 0) nextBlocks.push(block);
+\t\t}
+\t\tif (nextBlocks !== void 0) {
+\t\t\tif (nextMessages === void 0) nextMessages = messages.slice(0, i);
+\t\t\tnextMessages.push({ ...message, content: nextBlocks });
+\t\t} else if (nextMessages !== void 0) nextMessages.push(message);
+\t}
+\treturn nextMessages ?? messages;
 }
 `
 

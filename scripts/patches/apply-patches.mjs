@@ -24,6 +24,7 @@ import { ENV_MARKER as PTC_ENV_MARKER, LAUNCH_MARKER as PTC_LAUNCH_MARKER, asser
 import { PI_STREAMING_FILES, planPiStreaming } from './pi-upstream-streaming-020.mjs'
 import { MIMO_PI_FILE, planMimoThinking } from './mimo-thinking-toggle-056.mjs'
 import { REASONING_FILES, planReasoning } from './data/reasoning-envelope-1304.mjs'
+import { LONG_SESSION_CACHE_FILES, planLongSessionCache } from './data/long-session-history-cache.mjs'
 import { TYPERT_SCAN_MARKER, planTypertRegistryScan } from './data/registry-scan-c4.mjs'
 import { CLIENT_INDEX_LOADER_BARRIER_MARKER, planClientIndexLoaderBarrier } from './data/client-index-loader-barrier.mjs'
 import { resolveEnginePatchFile } from './resolve-engine-patch-target.mjs'
@@ -326,6 +327,19 @@ const IMPLS = {
     apply: (s) => {
       const plan = planReasoning(file => file === REASONING_FILES[0] ? s : loadImpl(file, CURRENT_STAGE_ROOT))
       for (const file of plan) if (file.file !== REASONING_FILES[0]) IMPL_state[file.file] = file.after
+      return plan[0].after
+    },
+  },
+
+  'long-session-history-cache': {
+    file: LONG_SESSION_CACHE_FILES[0],
+    additionalFiles: LONG_SESSION_CACHE_FILES.slice(1),
+    scope: 'engine',
+    check: (s) => planLongSessionCache(file => file === LONG_SESSION_CACHE_FILES[0] ? s : loadImpl(file, CURRENT_STAGE_ROOT))
+      .every(file => file.before === file.after),
+    apply: (s) => {
+      const plan = planLongSessionCache(file => file === LONG_SESSION_CACHE_FILES[0] ? s : loadImpl(file, CURRENT_STAGE_ROOT))
+      for (const file of plan) if (file.file !== LONG_SESSION_CACHE_FILES[0]) IMPL_state[file.file] = file.after
       return plan[0].after
     },
   },
