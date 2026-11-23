@@ -80,6 +80,25 @@ jobs:
         uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: '17' }
 
+      - name: Install the pinned arm64 Rust and Android NDK toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          read -r rust_version ndk_version rust_target < <(node -e '
+            const config = require("./native/phone-control-core/build-config.json");
+            console.log(config.compiler.rustc, config.ndk.version, config.abis["arm64-v8a"].rustTarget);
+          ')
+          ndk="$ANDROID_HOME/ndk/$ndk_version"
+          readelf="$ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readelf"
+          if [[ ! -x "$readelf" ]]; then
+            sudo "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "ndk;$ndk_version"
+          fi
+          test -x "$readelf"
+          test "$(sed -n 's/^Pkg\.Revision[[:space:]]*=[[:space:]]*//p' "$ndk/source.properties")" = "$ndk_version"
+          printf 'ANDROID_NDK_HOME=%s\n' "$ndk" >> "$GITHUB_ENV"
+          rustup toolchain install "$rust_version" --profile minimal --target "$rust_target"
+          rustup run "$rust_version" rustc --version
+
       - name: 生成本次构建的 Kotlin 单测结果
         shell: bash
         run: |
