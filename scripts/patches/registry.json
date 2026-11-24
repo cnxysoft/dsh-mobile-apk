@@ -624,6 +624,15 @@
         "sealed-reasoning-1304"
       ],
       "test": "scripts/patches/tests/long-session-history-cache.test.mjs"
+    },
+    {
+      "id": "sensevoice-android-runtime",
+      "target": "usr/lib/node_modules/@deepseek-ai/dsh/node_modules/@deepseek-ai/dsh-experimental-speech-to-text-sensevoice/lib/index.js",
+      "scope": "engine",
+      "summary": "放行 android-arm64/android-x64 平台并在 Android 上将 SenseVoice 推理桥接到壳侧原生 sherpa-onnx JNI 回环服务",
+      "provenance": "2026-11-24 移动端语音输入支持：上游 resolveRuntime 拒绝 android-arm64 且 sherpa-onnx-node 无 Android Bionic 绑定；改为对接壳侧 AndroidSpeechRuntime（libsherpa-onnx-jni.so v1.13.8）",
+      "marker": "dsh-mobile sensevoice android runtime",
+      "test": "scripts/patches/tests/sensevoice-android-runtime.test.mjs"
     }
   ],
   "retired": [

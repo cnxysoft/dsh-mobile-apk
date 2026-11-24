@@ -3128,7 +3128,8 @@ class EngineManager(private val context: Context, private val pickToken: String?
       //
       // 只在目录建成功时才设（PythonPackages.environment 的契约）：PYTHONUSERBASE 指向不存在的
       // 目录时 user site **不进 sys.path**，设了等于没设，还会让旧默认 user site 一起失联。
-      PythonPackages.environment(context.filesDir, usrDir)
+      PythonPackages.environment(context.filesDir, usrDir) +
+      AndroidSpeechRuntime.envVars()
   }
 
   companion object {

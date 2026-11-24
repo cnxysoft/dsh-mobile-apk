@@ -3846,6 +3846,31 @@
       "patchIds": [
         "image-history-batch-offload-I1"
       ]
+    },
+    "dsh-experimental-speech-to-text-sensevoice-0.2.2-rc.3": {
+      "source": "engine-tgz",
+      "engine": "0.2.2-rc.3",
+      "package": "@deepseek-ai/dsh-experimental-speech-to-text-sensevoice@0.2.2-rc.3",
+      "provenance": {
+        "tarballFile": "deepseek-ai-dsh-experimental-speech-to-text-sensevoice-0.2.2-rc.3.tgz",
+        "tarballSha256": "5ae936d87e532b3c45dc7527e0a93de069083afe8e3637ee1a4ac5f1f33dd681",
+        "inputKind": "published-tarball"
+      },
+      "files": [
+        "lib/index.js",
+        "package.json"
+      ],
+      "fileSha256": {
+        "lib/index.js": "286792bd82085586fbb0869aa32b3e3733425b4059a517465abed97dd710a15a",
+        "package.json": "2e36d437c875460e5d77d14e958fa5db0db672ad3e4d22d819371fdfe152b926"
+      },
+      "targets": {
+        "lib/index.js": "usr/lib/node_modules/@deepseek-ai/dsh/node_modules/@deepseek-ai/dsh-experimental-speech-to-text-sensevoice/lib/index.js",
+        "package.json": "usr/lib/node_modules/@deepseek-ai/dsh/node_modules/@deepseek-ai/dsh-experimental-speech-to-text-sensevoice/package.json"
+      },
+      "patchIds": [
+        "sensevoice-android-runtime"
+      ]
     }
   },
   "capture": {
@@ -3857,7 +3882,7 @@
       ]
     },
     "overlaySha256": "4443131b548e45ff7d1b42ca1d650c4287f5ec8cc3bfa63a6b9504569cb2a6de",
-    "registrySha256": "306be00c90cf05155bd0b87c99e35b7722967ddbb1c8f93f92f810b7e5064450",
+    "registrySha256": "80d1242438610d23ab87dc1758d1a68fd04ecd836bf9c6cf0005769c372fc6a7",
     "previousEngine": "0.2.2-rc.1"
   }
 }

@@ -146,6 +146,8 @@ class MainActivity : ComponentActivity() {
   internal val splashImportController = SplashImportController(this)
   /** 原生拍照（权限 launcher + 相机 ActivityResult 必须在 STARTED 之前注册）。 */
   internal val photoCaptureController = PhotoCaptureController(this)
+  /** 语音输入麦克风权限控制器（WebView onPermissionRequest + RECORD_AUDIO 运行时授权）。 */
+  internal val webAudioPermissionController = WebAudioPermissionController(this)
 
   /** 开屏视频覆盖层；在 onCreate 建好 root 之后初始化。 */
   private var splashOverlay: SplashOverlay? = null
@@ -1238,6 +1240,7 @@ class MainActivity : ComponentActivity() {
     OverlayPageHost.evaluator = null
     OverlayPageHost.readiness = null
     dirPickerController.cancelTtl()
+    webAudioPermissionController.release()
     guideRenderer.cancelPulse()
     // 兜底释放：Activity 销毁时清掉可能仍持有的屏幕常亮锁。
     try {
@@ -1761,6 +1764,14 @@ class MainActivity : ComponentActivity() {
         if (!isEngineSource(trustedTopFrameUrl)) return false
         // 旧系统可直接浏览公共目录；相册和系统文件选择器仍由控制器分流。
         return mediaPickerController.handleFileChooser(filePathCallback, fileChooserParams)
+      }
+
+      override fun onPermissionRequest(request: android.webkit.PermissionRequest) {
+        webAudioPermissionController.onPermissionRequest(request)
+      }
+
+      override fun onPermissionRequestCanceled(request: android.webkit.PermissionRequest) {
+        webAudioPermissionController.onPermissionRequestCanceled(request)
       }
 
       override fun onJsAlert(view: WebView, url: String, message: String, result: JsResult): Boolean {

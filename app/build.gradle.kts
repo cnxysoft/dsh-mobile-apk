@@ -79,11 +79,39 @@ val linuxRootfsVerifier = registerRustJniLibrary(
   "LinuxRootfsVerifier", "native/linux-rootfs-verifier", "dsh_rootfs_verify", "linux-rootfs-jni", listOf("--component", "linux-rootfs"),
 )
 
+val sherpaOnnxScript = rootProject.file("scripts/fetch-sherpa-onnx-native.mjs")
+val sherpaOnnxJni = layout.buildDirectory.dir("generated/sherpa-onnx-jni/${nativeControlAbis.joinToString("_")}")
+val sherpaOnnxCache = layout.buildDirectory.dir("cache/sherpa-onnx")
+val prepareSherpaOnnxJni = tasks.register<Exec>("prepareSherpaOnnxJni") {
+  group = "build"
+  workingDir(rootProject.projectDir)
+  inputs.file(sherpaOnnxScript).withPathSensitivity(org.gradle.api.tasks.PathSensitivity.RELATIVE)
+  inputs.property("abis", nativeControlAbis)
+  outputs.dir(sherpaOnnxJni)
+  commandLine(
+    listOf(
+      "node",
+      sherpaOnnxScript.absolutePath,
+      "--abis",
+      nativeControlAbis.joinToString(","),
+      "--out",
+      sherpaOnnxJni.get().asFile.absolutePath,
+      "--cache",
+      sherpaOnnxCache.get().asFile.absolutePath,
+    ),
+  )
+}
+tasks.configureEach {
+  if (name.startsWith("merge") && (name.endsWith("JniLibFolders") || name.endsWith("NativeLibs"))) {
+    dependsOn(prepareSherpaOnnxJni)
+  }
+}
+
 android {
   namespace = "com.dsharnessmobile.shell"
   compileSdk = 36
 
-  sourceSets.getByName("main").jniLibs.srcDirs(nativeControlJni, linuxXzJni, linuxRootfsVerifier)
+  sourceSets.getByName("main").jniLibs.srcDirs(nativeControlJni, linuxXzJni, linuxRootfsVerifier, sherpaOnnxJni)
 
   defaultConfig {
     applicationId = "com.dsharnessmobile.shell"

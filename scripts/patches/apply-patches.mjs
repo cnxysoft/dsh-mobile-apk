@@ -25,6 +25,7 @@ import { PI_STREAMING_FILES, planPiStreaming } from './pi-upstream-streaming-020
 import { MIMO_PI_FILE, planMimoThinking } from './mimo-thinking-toggle-056.mjs'
 import { REASONING_FILES, planReasoning } from './data/reasoning-envelope-1304.mjs'
 import { LONG_SESSION_CACHE_FILES, planLongSessionCache } from './data/long-session-history-cache.mjs'
+import { SENSEVOICE_INDEX_FILE, planSenseVoiceAndroidRuntime } from './data/sensevoice-android-runtime.mjs'
 import { TYPERT_SCAN_MARKER, planTypertRegistryScan } from './data/registry-scan-c4.mjs'
 import { CLIENT_INDEX_LOADER_BARRIER_MARKER, planClientIndexLoaderBarrier } from './data/client-index-loader-barrier.mjs'
 import { resolveEnginePatchFile } from './resolve-engine-patch-target.mjs'
@@ -342,6 +343,14 @@ const IMPLS = {
       for (const file of plan) if (file.file !== LONG_SESSION_CACHE_FILES[0]) IMPL_state[file.file] = file.after
       return plan[0].after
     },
+  },
+
+  'sensevoice-android-runtime': {
+    file: SENSEVOICE_INDEX_FILE,
+    scope: 'engine',
+    check: (s) => planSenseVoiceAndroidRuntime(file => file === SENSEVOICE_INDEX_FILE ? s : loadImpl(file, CURRENT_STAGE_ROOT))
+      .every(file => file.before === file.after),
+    apply: (s) => planSenseVoiceAndroidRuntime(file => file === SENSEVOICE_INDEX_FILE ? s : loadImpl(file, CURRENT_STAGE_ROOT))[0].after,
   },
 
   'mimo-thinking-toggle-056': {

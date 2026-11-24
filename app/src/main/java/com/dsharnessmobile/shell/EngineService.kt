@@ -63,6 +63,7 @@ class EngineService : Service() {
     // 落在这里而不是 OverlayService：通知必须**独立于悬浮球开关**生存（§6.0 风险 2）。
     NotifyStore.start(this)
     NotifyBridge.start(this)
+    AndroidSpeechRuntime.ensureStarted()
     com.dsharnessmobile.shell.nativecontrol.NativeControlRuntime.ensureStarted(this)
     // Dev log toggle on: persistent collection (logcat + engine.log → dshdata/log/, daily).
     if (MainActivity.DevLogPrefs.isEnabled(this)) LogCollector.start(this)
@@ -86,6 +87,13 @@ class EngineService : Service() {
   }
 
   override fun onBind(intent: Intent?): IBinder? = null
+
+  override fun onTrimMemory(level: Int) {
+    super.onTrimMemory(level)
+    if (level >= android.content.ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW) {
+      AndroidSpeechRuntime.unload()
+    }
+  }
 
   /** 任务移除（生命周期礼仪 F5.3）：不启动任何隐藏复活（不反弹）。
    *  ADB-F9 修复（2026-09-05 用户拍板语义）：划掉后台 = 主动关闭——完整停机，不保活。
@@ -113,6 +121,7 @@ class EngineService : Service() {
     startupExecutor.shutdownNow() // Cancels caller waits, not RootOwnershipJobs' shared worker.
     val currentInstance = instance === this
     if (currentInstance) {
+      AndroidSpeechRuntime.stop()
       com.dsharnessmobile.shell.nativecontrol.NativeControlRuntime.stop()
       instance = null
     }
