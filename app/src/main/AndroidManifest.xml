@@ -30,6 +30,9 @@
   <!-- 语音输入（WebView getUserMedia 麦克风采集）：运行时申请，仅向本机引擎源放行
        RESOURCE_AUDIO_CAPTURE。uses-feature required=false 保证无麦克风设备仍可正常安装。 -->
   <uses-permission android:name="android.permission.RECORD_AUDIO" />
+  <!-- Chromium WebView AudioManagerAndroid 启用 getUserMedia 录音时同时要求 MODIFY_AUDIO_SETTINGS
+       与 RECORD_AUDIO（缺前者会报 Unable to select communication device / Could not start audio source）。 -->
+  <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
   <uses-feature android:name="android.hardware.microphone" android:required="false" />
 
   <application

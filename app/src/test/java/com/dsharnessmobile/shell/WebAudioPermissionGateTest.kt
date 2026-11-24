@@ -71,6 +71,10 @@ class WebAudioPermissionGateTest {
     val manifest = File(repoRoot, "app/src/main/AndroidManifest.xml").readText()
     assertTrue("AndroidManifest must declare RECORD_AUDIO", manifest.contains("android.permission.RECORD_AUDIO"))
     assertTrue(
+      "AndroidManifest must declare MODIFY_AUDIO_SETTINGS for Chromium WebView AudioManagerAndroid",
+      manifest.contains("android.permission.MODIFY_AUDIO_SETTINGS"),
+    )
+    assertTrue(
       "AndroidManifest must declare optional microphone hardware feature",
       manifest.contains("android.hardware.microphone") && manifest.contains("android:required=\"false\""),
     )
